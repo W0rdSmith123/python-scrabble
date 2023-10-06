@@ -4,12 +4,10 @@ from settings_manager import SettingsManager
 from enums import PlayerType
 from exceptions import InvalidPlayerAction
 class Player:
-    def __init__(self, name: str, bag: ScrabbleBag, settings_manager: SettingsManager, player_type: PlayerType = PlayerType.HUMAN):
+    def __init__(self, name: str, bag: ScrabbleBag, settings_manager: SettingsManager):
         self._name = name
         self._rack = Rack(bag, settings_manager)
         self._score = 0
-        self._player_type = player_type
-
     @property
     def name(self) -> str:
         return self._name
@@ -31,10 +29,6 @@ class Player:
     @rack.setter
     def rack(self, rack: Rack) -> None:
         self._rack = rack
-
-    @property
-    def player_type(self) -> PlayerType:
-        return self._player_type
 
     def add_points(self, points: int) -> None:
         """Method to add points to the player's score."""

@@ -14,17 +14,7 @@ class Direction(Enum):
     def opposite(self) -> 'Direction':
         opposite_mapping = self._get_opposite_mapping()
         return opposite_mapping[self]
-
     
-class PlayerType(Enum):
-    """
-    Represents types of players in the game.
-    HUMAN: Represents a human player.
-    COMPUTER: Represents a computer player.
-    """
-    HUMAN = 1
-    COMPUTER = 2
-
 class SquareType(Enum):
     """
     Represents different types of squares on the Scrabble board with their multipliers.

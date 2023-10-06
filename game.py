@@ -12,7 +12,7 @@ class Game:
         # Load settings from settings.json
         self.settings_manager = SettingsManager(word_set, settings_dict)
         if player_names is None:
-            player_names = range(1, self.settings_manager.player_count + 1) 
+            player_names = range(1, self.settings_manager.game_mechanics.player_count + 1) 
         if len(player_names) != self.settings_manager.game_mechanics.player_count:
             raise IndexError('Number of player names does not match number of players.')
         # Initialize board, bag, and players
