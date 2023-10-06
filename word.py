@@ -1,39 +1,49 @@
 from enums import Direction
 from settings_manager import SettingsManager
 from board import ScrabbleBoard
+from exceptions import InvalidWordError
+
 
 class Word:
     def __init__(self, row: int, column: int, direction: Direction, board: ScrabbleBoard, settingsManager: SettingsManager):
+        """Initializes a Word instance using the starting position and the board."""
         self.row = row
         self.column = column
         self.direction = direction
         self.word = ''
         self.calculate_word(board, settingsManager)
 
-    def find_starting_point(self, board: ScrabbleBoard):
+    def find_starting_point(self, board: ScrabbleBoard) -> None:
+        """Finds and sets the starting position of the word."""
         offset = 0
-        while board.get_square(self.row     - (self.direction == Direction.VERTICAL) * offset, self.column - (self.direction == Direction.HORIZONTAL) * offset).tile is not None:
+        while board.get_square(self.row - (self.direction == Direction.VERTICAL) * offset, 
+                               self.column - (self.direction == Direction.HORIZONTAL) * offset).tile is not None:
             offset += 1
         offset -= 1
-        self.row = self.row - (self.direction == Direction.VERTICAL) * offset
-        self.column = self.column - (self.direction == Direction.HORIZONTAL) * offset
-    
-    def construct_word(self, board: ScrabbleBoard):
+        self.row -= (self.direction == Direction.VERTICAL) * offset
+        self.column -= (self.direction == Direction.HORIZONTAL) * offset
+
+    def construct_word(self, board: ScrabbleBoard) -> None:
+        """Constructs the word based on the starting position and direction."""
         self.word = ''
-        current_square = board.get_square(self.row, self.column)
         offset = 0
+        current_square = board.get_square(self.row, self.column)
         while current_square.tile is not None:
             self.word += current_square.tile.letter
             offset += 1
-            current_square = board.get_square(self.row + (self.direction == Direction.VERTICAL) * offset, self.column + (self.direction == Direction.HORIZONTAL) * offset)
-        self.word = self.word.upper()       
-    def calculate_word(self, board: ScrabbleBoard, settingsManager: SettingsManager):
+            current_square = board.get_square(self.row + (self.direction == Direction.VERTICAL) * offset, 
+                                              self.column + (self.direction == Direction.HORIZONTAL) * offset)
+        self.word = self.word.upper()
+
+    def calculate_word(self, board: ScrabbleBoard, settingsManager: SettingsManager) -> None:
+        """Validates and constructs the word from the board."""
         self.find_starting_point(board)
         self.construct_word(board)
         if not settingsManager.is_valid_word(self.word):
-            raise ValueError('Invalid word')
+            raise InvalidWordError(f'Invalid word: {self.word}')
 
-    def calculate_score(self, board: ScrabbleBoard):
+    def calculate_score(self, board: ScrabbleBoard) -> int:
+        """Calculates and returns the score of the word."""
         self.score = 0
         self.multiplier = 1
         current_row = self.row

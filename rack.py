@@ -1,58 +1,67 @@
 from bag import ScrabbleBag
+from exceptions import InvalidTileExchange, TileNotFound
 from settings_manager import SettingsManager
 from tile import ScrabbleTile
 
 class Rack:
     def __init__(self, bag: ScrabbleBag, settings_manager: SettingsManager) -> None:
-        self.tiles = []
-        self.refill(bag, settings_manager)
+        self._tiles: list[ScrabbleTile] = []
+        self._max_rack_size = settings_manager.game_mechanics.max_rack_size
+        self.refill(bag)
+
+    @property
+    def tiles(self) -> list[ScrabbleTile]:
+        return self._tiles
+
+    @property
+    def max_rack_size(self) -> int:
+        return self._max_rack_size
+
+    def refill(self, bag: ScrabbleBag) -> None:
+        for _ in range(min(len(bag), self.max_rack_size - len(self))):
+            self._tiles.append(bag.draw_tile())
         self.sort()
-    
-    def refill(self, bag: ScrabbleBag, settings_manager: SettingsManager) -> None:
-        for _ in range(min(settings_manager.max_rack_size - len(self.tiles), len(bag))):
-            self.tiles.append(bag.draw_tile())
-        self.sort()
-    
-    def exchange_tiles(self, tiles: str, bag: ScrabbleBag, settings_manager: SettingsManager) -> None:
-        if len(tiles) > settings_manager.max_rack_size:
-            raise ValueError('Cannot exchange more tiles than the maximum rack size')
+
+    def exchange_tiles(self, tiles: str, bag: ScrabbleBag) -> None:
+        if len(tiles) > self.max_rack_size:
+            raise InvalidTileExchange('Cannot exchange more tiles than the maximum rack size')
         for tile in tiles:
-            if tile not in self.tiles:
-                raise ValueError('Cannot exchange tiles that are not in the rack')
+            if not self.has_tile(tile):
+                raise InvalidTileExchange(f"Tile '{tile}' not found in rack")
         for tile in tiles:
             storedTile = self.get_tile(tile)
-            self.tiles.remove(storedTile)
+            self._tiles.remove(storedTile)
             bag.deposit_tile(storedTile)
-        self.refill(bag, settings_manager)
+        self.refill(bag)
+
+    def has_tile(self, char: str) -> bool:
+        return any(tile == char or (tile == '#' and char != '#') for tile in self._tiles)
+
     def sort(self) -> None:
-        self.tiles.sort()
+        self._tiles.sort()
 
     def pop(self, index: int) -> ScrabbleTile:
-        return self.tiles.pop(index)
+        return self._tiles.pop(index)
 
     def get_tile(self, char: str) -> ScrabbleTile:
-        for tile in self.tiles:
+        for tile in self._tiles:
             if tile == char:
                 return tile
-        for tile in self.tiles:
+        for tile in self._tiles:
             if tile == '#':
                 tile.letter = char
                 return tile
-        return None
+        raise TileNotFound(f"Tile '{char}' not found in rack")
 
     def remove_tile(self, tile: ScrabbleTile) -> None:
         try:
-            self.tiles.remove(tile)
+            self._tiles.remove(tile)
         except ValueError:
-            raise ValueError('Tile not in rack')
-        
+            raise TileNotFound('Tile not in rack')
 
     def __lt__(self, other: 'Rack') -> bool:
         if not isinstance(other, Rack):
-            raise TypeError(f'Cannot compare Player to {type(other)}')
-        self.sort()
-        other.sort()
-        
+            raise TypeError(f'Cannot compare Rack to {type(other)}')
         for i in range(min(len(self), len(other))):
             if self[i] < other[i]:
                 return True
@@ -61,16 +70,13 @@ class Rack:
         return len(self) < len(other)
 
     def __len__(self) -> int:
-        return len(self.tiles)
-    
+        return len(self._tiles)
+
     def __getitem__(self, index: int) -> ScrabbleTile:
-        return self.tiles[index]
+        return self._tiles[index]
 
     def __repr__(self):
-        return f'Rack({self.tiles})'
-    
+        return f'Rack({self._tiles})'
+
     def __str__(self):
-        formatted_tiles = []
-        for tile in self.tiles:
-            formatted_tiles.append(str(tile))
-        return formatted_tiles.join(' ')
+        return ' '.join(str(tile) for tile in self._tiles)
