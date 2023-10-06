@@ -16,6 +16,7 @@ class ScrabbleBag:
 
         self._tiles = [ScrabbleTile(letter, letter_scores[letter]) for letter, quantity in tiles.items() for _ in range(quantity)]
         self.shuffle()
+        self._tiles = self._tiles[:20]
 
     def shuffle(self) -> None:
         """Shuffle the tiles in the bag."""

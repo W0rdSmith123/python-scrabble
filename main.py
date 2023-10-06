@@ -25,7 +25,7 @@ def main():
                 game.make_move(row, col, word, direction)
             except ValueError as e:
                 print(e)
-                
+
         elif choice == '2':
             tiles = input('Enter tiles to exchange: ')
             game.exchange_tiles(tiles)
@@ -35,7 +35,11 @@ def main():
             game.resign()
         else:
             print('Invalid choice.')
-    game.end_game()
+    game.apply_end_game_penalties()
+    players = sorted(game.players, key=lambda player: player.score, reverse=True)
+    for player in players:
+        print(f'{player.name}\'s score: {player.score}')
+
 
 if __name__ == '__main__':
     main()

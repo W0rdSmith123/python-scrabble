@@ -1,25 +1,21 @@
 from enum import Enum
 
 class Direction(Enum):
-    """
-    Represents a direction on the Scrabble board.
-    HORIZONTAL: Represents the horizontal direction.
-    VERTICAL: Represents the vertical direction.
-    """
     HORIZONTAL = 'h'
     VERTICAL = 'v'
-    
-    _opposite_mapping = {
-        HORIZONTAL: VERTICAL,
-        VERTICAL: HORIZONTAL
-    }
+
+    @classmethod
+    def _get_opposite_mapping(cls):
+        return {
+            cls.HORIZONTAL: cls.VERTICAL,
+            cls.VERTICAL: cls.HORIZONTAL
+        }
 
     def opposite(self) -> 'Direction':
-        """
-        Returns the opposite direction.
-        """
-        return self._opposite_mapping[self]
+        opposite_mapping = self._get_opposite_mapping()
+        return opposite_mapping[self]
 
+    
 class PlayerType(Enum):
     """
     Represents types of players in the game.
@@ -45,3 +41,6 @@ class SquareType(Enum):
     TRIPLE_WORD = 'TW'
     NO_MODIFIER = '  '
     START = 'ST'
+
+    def __str__(self) -> str:
+        return self.value

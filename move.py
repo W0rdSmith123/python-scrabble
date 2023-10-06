@@ -88,14 +88,14 @@ class Move:
             current_player.score += word.calculate_score(board)
 
         if board.get_square(row - row_delta, col - col_delta).tile is not None:
+            print('Opposite of direction ' + str(direction))
+            print(type(direction))
+            print(direction.opposite())
             word = self._get_word(row - row_delta, col - col_delta, direction.opposite(), board, settingsManager)
             current_player.score += word.calculate_score(board)
 
     def _get_word(self, row: int, col: int, direction: Direction, board: ScrabbleBoard, settingsManager: SettingsManager):
         """Helper method to retrieve a word."""
-        try:
-            word = Word(row, col, direction, board, settingsManager)
-        except ValueError:
-            raise InvalidNormalWordError(f'Invalid normal word at {row}, {col}: {word.word}')
+        word = Word(row, col, direction, board, settingsManager)
         self.connected = True
         return word

@@ -33,6 +33,11 @@ class ScrabbleBoard:
         """Get a copy of the board without allowing modification to the original board."""
         return [row.copy() for row in self._board]
 
+    @board.setter
+    def board(self, new_board: List[List[ScrabbleSquare]]) -> None:
+        """Set the board to a new board."""
+        self._board = new_board
+        
     def __repr__(self):
         return f'ScrabbleBoard(rows={len(self._board)}, cols={len(self._board[0])})'
 
