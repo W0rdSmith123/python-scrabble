@@ -1,13 +1,12 @@
 from bag import ScrabbleBag
 from rack import Rack
 from settings_manager import SettingsManager
-from enums import PlayerType
-from exceptions import InvalidPlayerAction
 class Player:
     def __init__(self, name: str, bag: ScrabbleBag, settings_manager: SettingsManager):
         self._name = name
         self._rack = Rack(bag, settings_manager)
         self._score = 0
+
     @property
     def name(self) -> str:
         return self._name
@@ -18,8 +17,8 @@ class Player:
 
     @score.setter
     def score(self, value: int) -> None:
-        if value < 0:
-            raise InvalidPlayerAction("Score cannot be negative!")
+        if not isinstance(value, int):
+            raise ValueError("Score must be an integer!")    
         self._score = value
 
     @property
@@ -29,20 +28,6 @@ class Player:
     @rack.setter
     def rack(self, rack: Rack) -> None:
         self._rack = rack
-
-    def add_points(self, points: int) -> None:
-        """Method to add points to the player's score."""
-        if points < 0:
-            raise InvalidPlayerAction("Cannot add negative points!")
-        self._score += points
-
-    def subtract_points(self, points: int) -> None:
-        """Method to subtract points from the player's score."""
-        if points < 0:
-            raise InvalidPlayerAction("Cannot subtract negative points!")
-        if points > self._score:
-            raise InvalidPlayerAction("Cannot subtract more points than current score!")
-        self._score -= points
 
     def refill(self, bag: ScrabbleBag) -> None:
         self.rack.refill(bag)

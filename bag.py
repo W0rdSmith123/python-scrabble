@@ -15,23 +15,19 @@ class ScrabbleBag:
         tiles = settings_manager.tile_scoring.tile_distribution
 
         self._tiles = [ScrabbleTile(letter, letter_scores[letter]) for letter, quantity in tiles.items() for _ in range(quantity)]
-        self.shuffle()
+        self._tiles = self._tiles
+        random.shuffle(self._tiles)
         self._tiles = self._tiles[:20]
 
-    def shuffle(self) -> None:
-        """Shuffle the tiles in the bag."""
-        random.shuffle(self._tiles)
-
     def draw_tile(self) -> ScrabbleTile:
-        """Draw a tile from the bag. Raises an EmptyBagError if the bag is empty."""
+        """Draw a random tile from the bag. Raises an error if the bag is empty."""
         if not self._tiles:
             raise EmptyBagError('Bag is empty')
-        return self._tiles.pop()
+        return self._tiles.pop(random.randint(0, len(self._tiles) - 1))
 
     def deposit_tile(self, tile: ScrabbleTile) -> None:
         """Deposit a tile back into the bag and shuffle."""
         self._tiles.append(tile)
-        self.shuffle()
 
     @property
     def tiles(self) -> list[ScrabbleTile]:

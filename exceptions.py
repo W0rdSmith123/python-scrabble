@@ -1,83 +1,80 @@
-# Base exceptions
-class ScrabbleError(Exception):
+# Main Scrabble exception
+class ScrabbleException(Exception):
     """Base exception for all Scrabble-related errors."""
     pass
 
-class ScrabbleValueError(ScrabbleError, ValueError):
-    """Base exception for value-related errors in Scrabble."""
+# Bag exceptions
+class EmptyBagError(ScrabbleException):
+    """Raised when attempting to draw from an empty Scrabble bag."""
     pass
 
-# Bag-related exceptions
-class EmptyBagError(ScrabbleError):
-    """Raised when an attempt is made to draw a tile from an empty bag."""
+# Board exceptions
+class InvalidBoardPositionError(ScrabbleException):
+    """Raised when an invalid row or column is accessed on the board."""
     pass
 
-# Board-related exceptions
-class OutOfBoundsError(ScrabbleError):
-    """Raised when an attempt is made to access a square outside the board boundaries."""
+# Game exceptions
+class PlayerCountMismatchError(ScrabbleException):
+    """Raised when the number of player names doesn't match the expected count."""
     pass
 
-class InvalidMoveError(ScrabbleError):
-    """Raised when a move on the board is invalid."""
+class TileDistributionError(ScrabbleException):
+    """Raised when there are not enough tiles for the given number of players."""
     pass
 
-class InvalidPlacementError(ScrabbleError):
-    """Raised when trying to place tiles in a disconnected manner on the board."""
+# Move exceptions
+class InvalidWordError(ScrabbleException):
+    """Raised when an invalid word is played."""
     pass
 
-class TilePlacementError(ScrabbleValueError):
-    """Raised when trying to place a tile on a square that's already occupied."""
+class InvalidPlacementError(ScrabbleException):
+    """Raised when tiles are placed in an invalid position."""
     pass
 
-class InvalidWordError(ScrabbleValueError):
-    """Raised when an invalid word is used in a move."""
+class TilesNotConnectedError(ScrabbleException):
+    """Raised when played tiles are not connected to existing tiles."""
     pass
 
-class InvalidNormalWordError(ScrabbleValueError):
-    """Raised when the tiles placed form an invalid perpendicular word."""
+class InsufficientTilesError(ScrabbleException):
+    """Raised when the player doesn't have the necessary tiles to make a move."""
     pass
 
-# Player-related exceptions
-class InvalidPlayerAction(ScrabbleError):
-    """Raised when the player attempts an invalid action."""
+# Rack exceptions
+class RackSizeError(ScrabbleException):
+    """Raised when a modification to the rack would exceed the rack size bounds."""
     pass
 
-# Input-related exceptions
-class InvalidInputError(ScrabbleError):
-    """Raised when the input provided is invalid."""
+class TileNotInRackError(ScrabbleException):
+    """Raised when a tile is not found in the rack."""
     pass
 
-# Rack-related exceptions
-class RackError(ScrabbleError):
-    """Base exception for rack-related errors."""
+# Settings Manager exceptions
+class InvalidSettingTypeError(ScrabbleException):
+    """Raised when an invalid setting type is defined."""
     pass
 
-class InvalidTileExchange(RackError):
-    """Raised when trying to exchange invalid tiles."""
+# Square exceptions
+class SquareOccupiedError(ScrabbleException):
+    """Raised when trying to place a tile on an already occupied square."""
     pass
 
-class TileNotFound(RackError):
-    """Raised when a specific tile is not found in the rack."""
+class NoTileError(ScrabbleException):
+    """Raised when trying to access or remove a tile from an empty square."""
     pass
 
-# Tile-related exceptions
-class InvalidLetterError(ScrabbleValueError):
-    """Raised when the letter provided is invalid."""
+class InvalidSquareTypeError(ScrabbleException):
+    """Raised when an invalid square type is used."""
+    pass
+    
+# Tile exceptions
+class InvalidLetterError(ScrabbleException):
+    """Raised for invalid letter assignments."""
     pass
 
-class NoTileError(ScrabbleValueError):
-    """Raised when an operation requires a tile but the square is empty."""
+class InvalidValueError(ScrabbleException):
+    """Raised for invalid value assignments."""
     pass
 
-class TileModificationError(ScrabbleValueError):
-    """Raised when attempting to modify an immutable tile."""
-    pass
-
-# Setting-related exceptions
-class InvalidSettingError(ScrabbleValueError):
-    """Raised when a setting has an invalid type or value."""
-    pass
-
-class InvalidValueError(ScrabbleValueError):
-    """Raised when the value provided is invalid."""
+class NonBlankTileError(ScrabbleException):
+    """Raised when trying to modify a non-blank tile."""
     pass

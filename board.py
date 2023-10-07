@@ -1,7 +1,7 @@
 from typing import List
 
-from enums import Direction, SquareType
-from exceptions import InvalidMoveError, OutOfBoundsError
+from enums import SquareType
+from exceptions import InvalidBoardPositionError
 from square import ScrabbleSquare
 
 class ScrabbleBoard:
@@ -17,17 +17,8 @@ class ScrabbleBoard:
         """Get the square at the specified row and column."""
         if 0 <= row < len(self._board) and 0 <= col < len(self._board[0]):
             return self._board[row][col]
-        raise OutOfBoundsError('Row or column out of bounds')
-
-    def validate_move(self, row: int, col: int, word: str, direction: Direction) -> None:
-        """Validate that the word can be placed at the specified location and direction on the board."""
-        for i in range(len(word)):
-            r_offset = i if direction == Direction.VERTICAL else 0
-            c_offset = i if direction == Direction.HORIZONTAL else 0
-            if row + r_offset >= len(self._board) or col + c_offset >= len(self._board[0]):
-                raise InvalidMoveError('Word does not fit on the board in the given direction')
-            self.get_square(row + r_offset, col + c_offset)
-
+        raise InvalidBoardPositionError('Row or column out of bounds')
+    
     @property
     def board(self) -> List[List[ScrabbleSquare]]:
         """Get a copy of the board without allowing modification to the original board."""

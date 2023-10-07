@@ -1,20 +1,17 @@
 from enum import Enum
 
+from enum import Enum
+
 class Direction(Enum):
     HORIZONTAL = 'h'
     VERTICAL = 'v'
-
-    @classmethod
-    def _get_opposite_mapping(cls):
-        return {
-            cls.HORIZONTAL: cls.VERTICAL,
-            cls.VERTICAL: cls.HORIZONTAL
-        }
-
-    def opposite(self) -> 'Direction':
-        opposite_mapping = self._get_opposite_mapping()
-        return opposite_mapping[self]
     
+    def opposite(self) -> 'Direction':
+        """Returns the opposite direction."""
+        return (Direction.HORIZONTAL if self == Direction.VERTICAL 
+                else Direction.VERTICAL if self == Direction.HORIZONTAL 
+                else None)
+
 class SquareType(Enum):
     """
     Represents different types of squares on the Scrabble board with their multipliers.
@@ -33,4 +30,5 @@ class SquareType(Enum):
     START = 'ST'
 
     def __str__(self) -> str:
+        """Returns the string representation of the SquareType."""
         return self.value

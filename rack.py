@@ -1,12 +1,12 @@
 from bag import ScrabbleBag
-from exceptions import InvalidTileExchange, TileNotFound
 from settings_manager import SettingsManager
 from tile import ScrabbleTile
+from exceptions import RackSizeError, TileNotInRackError
 
 class Rack:
     def __init__(self, bag: ScrabbleBag, settings_manager: SettingsManager) -> None:
-        self._tiles: list[ScrabbleTile] = []
         self._max_rack_size = settings_manager.game_mechanics.max_rack_size
+        self._tiles: list[ScrabbleTile] = []
         self.refill(bag)
 
     @property
@@ -24,18 +24,20 @@ class Rack:
 
     def exchange_tiles(self, tiles: str, bag: ScrabbleBag) -> None:
         if len(tiles) > self.max_rack_size:
-            raise InvalidTileExchange('Cannot exchange more tiles than the maximum rack size')
+            raise RackSizeError('Cannot exchange more tiles than the rack can hold')
         for tile in tiles:
-            if not self.has_tile(tile):
-                raise InvalidTileExchange(f"Tile '{tile}' not found in rack")
-        for tile in tiles:
-            storedTile = self.get_tile(tile)
+            storedTile = self.get_exact_tile(tile)
+            if storedTile is None:
+                raise TileNotInRackError(f"Tile '{tile}' not found in rack")
             self._tiles.remove(storedTile)
             bag.deposit_tile(storedTile)
         self.refill(bag)
 
     def has_tile(self, char: str) -> bool:
         return any(tile == char or (tile == '#' and char != '#') for tile in self._tiles)
+    
+    def has_exact_tile(self, char: str) -> bool:
+        return any(tile == char for tile in self._tiles)
 
     def sort(self) -> None:
         self._tiles.sort()
@@ -51,13 +53,19 @@ class Rack:
             if tile == '#':
                 tile.letter = char
                 return tile
-        raise TileNotFound(f"Tile '{char}' not found in rack")
+        raise TileNotInRackError(f"Tile '{char}' not found in rack")
+    
+    def get_exact_tile(self, char: str) -> ScrabbleTile:
+        for tile in self._tiles:
+            if tile == char:
+                return tile
+        raise TileNotInRackError(f"Tile '{char}' not found in rack")
 
     def remove_tile(self, tile: ScrabbleTile) -> None:
         try:
             self._tiles.remove(tile)
         except ValueError:
-            raise TileNotFound('Tile not in rack')
+            raise TileNotInRackError('Tile not in rack')
 
     def __lt__(self, other: 'Rack') -> bool:
         if not isinstance(other, Rack):
