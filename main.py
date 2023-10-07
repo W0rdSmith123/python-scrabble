@@ -2,7 +2,7 @@ import json
 
 from enums import Direction
 from game import Game
-from exceptions import InvalidWordError
+from errors import ScrabbleError
 
 def main():
     with open('enable.txt') as f:
@@ -24,7 +24,7 @@ def main():
             direction = Direction(input('Enter direction (h or v): '))
             try:
                 game.make_move(row, col, word, direction)
-            except InvalidWordError as e:
+            except ScrabbleError as e:
                 print(e)
 
         elif choice == '2':
