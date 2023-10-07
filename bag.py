@@ -16,8 +16,8 @@ class ScrabbleBag:
 
         self._tiles = [ScrabbleTile(letter, letter_scores[letter]) for letter, quantity in tiles.items() for _ in range(quantity)]
         self._tiles = self._tiles
-        random.shuffle(self._tiles)
-        self._tiles = self._tiles[:20]
+        random.shuffle(self._tiles)       
+        # self._tiles = self._tiles[:20] # For testing purposes
 
     def draw_tile(self) -> ScrabbleTile:
         """Draw a random tile from the bag. Raises an error if the bag is empty."""
